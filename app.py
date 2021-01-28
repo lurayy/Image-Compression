@@ -9,7 +9,7 @@ import threading
 import time
 
 
-THREAD_LIMIT = 5
+THREAD_LIMIT = 10
 LOCATION = '/home/lurayy/mandala/compress/files'
 
 ACTIVE_COMPRESSIONS = 0
@@ -28,6 +28,7 @@ class Compressor(threading.Thread):
         self.image = IMAGES.pop()
     
     def run(self):
+        im = None
         try:
             global ACTIVE_COMPRESSIONS
             global COMPLETE_COUNT
@@ -39,15 +40,22 @@ class Compressor(threading.Thread):
             img_byte = io.BytesIO()
             im.save(img_byte, format='JPEG')
             img_byte = img_byte.getvalue()
+
             optimized_jpeg = pyguetzli.process_jpeg_bytes(img_byte)
             im = Image.open(io.BytesIO(optimized_jpeg))
             im.save(self.image,optimize=True, quality=90)
-            cmd = f'python3 src/crunch.py {self.image}'
-            os.system(cmd)
-            os.remove(self.image)
+            ext = str(self.image).split('.')
+            ext = ext[len(ext)-1]
+            if str(ext).lower() == "png":
+                cmd = f'python3 src/crunch.py {self.image}'
+                os.system(cmd)
+                os.remove(self.image)
             ACTIVE_COMPRESSIONS = ACTIVE_COMPRESSIONS - 1
-            COMPLETE_COUNT = COMPLETE_COUNT + 1 
+            COMPLETE_COUNT = COMPLETE_COUNT + 1
         except Exception as exp:
+            if im:
+                im.save(self.image,optimize=True, quality=100)
+            ACTIVE_COMPRESSIONS = ACTIVE_COMPRESSIONS - 1
             self.log.write('error on : '+str(self.image)+'  error : '+str(exp)+'\n')
 
 class CompressionSystem():
