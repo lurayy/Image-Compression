@@ -10,7 +10,7 @@ import time
 
 
 THREAD_LIMIT = 5
-LOCATION = '/home/lurayy/mandala/compress/compressed'
+LOCATION = '/home/lurayy/mandala/compress/files'
 
 ACTIVE_COMPRESSIONS = 0
 COMPLETE_COUNT = 0
@@ -29,7 +29,6 @@ class Compressor(threading.Thread):
     
     def run(self):
         try:
-            print('compressing : ',self.image)
             global ACTIVE_COMPRESSIONS
             global COMPLETE_COUNT
             self.log.write(f'Compressing : {self.image}\n')
@@ -87,6 +86,9 @@ class CompressionSystem():
 
     def clean_up(self, images):
         i = 0
+        self.log.write('\n')
+        self.log.write('\n')
+        self.log.write('Starting Cleaning process\n')
         for image in images:
             self.log.write(f'Total Cleaned : {i} , {float(i/len(images)*100)}Cleaning : {image}\n')
             new_name = (str(image).replace('-crunch', ''))
