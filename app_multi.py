@@ -10,7 +10,7 @@ import time
 
 
 THREAD_LIMIT = 10
-LOCATION = '/home/lurayy/mandala/compress/files'
+LOCATION = '/home/ubuntu/torona/Image-Compression/media'
 
 ACTIVE_COMPRESSIONS = 0
 COMPLETE_COUNT = 0
@@ -32,6 +32,7 @@ class Compressor(threading.Thread):
         try:
             global ACTIVE_COMPRESSIONS
             global COMPLETE_COUNT
+            print('On Image : ',self.image)
             self.log.write(f'Compressing : {self.image}\n')
             ACTIVE_COMPRESSIONS = ACTIVE_COMPRESSIONS + 1 
             im = Image.open(self.image)

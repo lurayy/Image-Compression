@@ -9,7 +9,7 @@ import threading
 import time
 
 
-LOCATION = '/home/lurayy/mandala/compress/files'
+LOCATION = '/home/ubuntu/torona/Image-Compression/temp'
 
 IMAGES = []
 LOG = None
@@ -84,4 +84,3 @@ if __name__ == "__main__":
         LOG.write(str(exp)+'\n')
     finally:
         LOG.close()
-        
