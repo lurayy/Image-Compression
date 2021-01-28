@@ -1,4 +1,6 @@
 *venv/*
 .files/*
-.media/
-.backup/
+.media/*
+.backup/*
+media/*
+backup/*
