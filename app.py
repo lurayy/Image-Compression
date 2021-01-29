@@ -8,26 +8,34 @@ import datetime
 import threading
 import time
 
+DATE = datetime.datetime.now()
 
-LOCATION = '/home/ubuntu/torona/Image-Compression/temp'
+def log(msg):
+    with open('logs/log_'+str(DATE), 'a+') as f:
+        f.write(msg + '\n')
+
+def error_log(msg):
+    with open('logs/error_'+str(DATE), 'a+') as f:
+        f.write(msg + '\n')
+
+# LOCATION = '/home/ubuntu/torona/Image-Compression/media'
+LOCATION = '/home/lurayy/mandala/compress/temp'
 
 IMAGES = []
 LOG = None
 
 class CompressionSystem():
-    def __init__(self, log):
-        self.log = log
 
     def start(self, url):
         global IMAGES
-        self.log.write('Finding all images . . . \n')
+        log('Finding all images . . . \n')
         IMAGES = set(Path(url).rglob("*.[pP][nN][gG]")).union(set(Path(url).rglob("*.[jJ][pP][gG]")).union(set(Path(url).rglob("*.[jJ][pP][eE][gG]"))))
-        self.log.write(f'{len(IMAGES)} images found.\n')
-        self.log.write('Starting Compression Process . . .\n')
+        log(f'{len(IMAGES)} images found.\n')
+        log('Starting Compression Process . . .\n')
         self.start_thread()
 
         images = set(Path(url).rglob("*.[pP][nN][gG]")).union(set(Path(url).rglob("*.[jJ][pP][gG]")).union(set(Path(url).rglob("*.[jJ][pP][eE][gG]"))))
-        self.log.write('Compression Complete, Cleaning up . . .\n')
+        log('Compression Complete, Cleaning up . . .\n')
         self.clean_up(images)
         return True
     
@@ -37,13 +45,15 @@ class CompressionSystem():
         i = 0
         for image in IMAGES:
             print(f'{i/len(IMAGES)*100} % Done\n')
+            log(f'{i/len(IMAGES)*100} % Done\n')
             self.compress(image)
             i = i + 1
 
     def compress(self, image):
         im = None
         try:
-            self.log.write(f'Compressing : {image}\n')
+            log(f'Compressing : {image}\n')
+            print(f'Compressing : {image}\n')
             im = Image.open(image)
             os.remove(image)
             im = im.convert('RGB')
@@ -59,28 +69,26 @@ class CompressionSystem():
                 cmd = f'python3 src/crunch.py {image}'
                 os.system(cmd)
                 os.remove(image)
+            log(f'Compression Successful {image}')
         except Exception as exp:
             if im:
                 im.save(image,optimize=True, quality=100)
-            self.log.write('error on : '+str(image)+'  error : '+str(exp)+'\n')
+            error_log('error on : '+str(image)+'  error : '+str(exp)+'\n')
 
     def clean_up(self, images):
         i = 0
-        self.log.write('\n')
-        self.log.write('\n')
-        self.log.write('Starting Cleaning process\n')
+        log('\n')
+        log('\n')
+        log('Starting Cleaning process\n')
         for image in images:
-            self.log.write(f'Total Cleaned : {i} , {float(i/len(images)*100)}Cleaning : {image}\n')
+            log(f'Total Cleaned : {i} , {float(i/len(images)*100)}Cleaning : {image}\n')
             new_name = (str(image).replace('-crunch', ''))
             os.rename(image, new_name)
             i = i + 1
     
 if __name__ == "__main__":
     try:
-        LOG = open('logs/'+str(datetime.datetime.now()), 'w')
-        compress = CompressionSystem(LOG)
+        compress = CompressionSystem()
         compress.start(LOCATION)
     except Exception as exp:
-        LOG.write(str(exp)+'\n')
-    finally:
-        LOG.close()
+        error_log(str(exp)+'\n')
