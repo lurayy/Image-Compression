@@ -114,8 +114,8 @@ class CompressionSystem():
         print('clean up complete')
     
 if __name__ == "__main__":
+    os.mkdir('logs/'+str(DATE))
     try:
-        os.mkdir('logs/'+str(DATE))
         compress = CompressionSystem()
         compress.start(LOCATION)
     except Exception as exp:
