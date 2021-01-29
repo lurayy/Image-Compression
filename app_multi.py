@@ -11,7 +11,7 @@ import time
 
 THREAD_LIMIT = 2
 # LOCATION = '/home/ubuntu/torona/Image-Compression/media'
-LOCATION = '/home/lurayy/mandala/compress/temp'
+LOCATION = '/home/lurayy/mandala/compress/files'
 ACTIVE_COMPRESSIONS = 0
 COMPLETE_COUNT = 0
 TOTAL_COUNT = 0
@@ -98,6 +98,8 @@ class CompressionSystem():
                     run = False
 
     def can_run(self):
+        global ACTIVE_COMPRESSIONS
+        global THREAD_LIMIT
         if ACTIVE_COMPRESSIONS < THREAD_LIMIT:
             return True
         else:
